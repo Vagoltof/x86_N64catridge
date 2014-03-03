@@ -10,4 +10,4 @@ usemy monitor, etc) using the microprocessor of an old pc that i had laying
 around, basically, i'm writting some kind of basic OS to this end.
 
 For the moment, there is only a small assambler file that is written to 
-a MBR, and display one of to massage deppending on the keypord input. 
+a MBR, and display one of two massages depending on the keypord input. 
