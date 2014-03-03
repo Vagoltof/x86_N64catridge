@@ -42,8 +42,13 @@ string:
     pop ax                                       ; ponemos el ultimo valor de la pila en ah, para ver el estado
     cmp ax, 0x0                                  ; comparamos con 0, si es asi, iremos a introducir un input del teclado
     jne end                                      ; si es 1, terminamos el programa
+    jmp getchar                                  ; a obtener inputs del teclado
+
+getchar:
+    mov ah,0x0                                   ; ah debe de ser 0 para que la interrupcion 16 sepa que debe de leer del teclado
+    mov al, 0x0                                  ; lo hacemos 0, solo par evitar algun problema, aqui se guarda el valor ascii usado
+    int 0x16                                     ; la interrupcion "read", el valor ascii se guarda en al.
     
-    call getchar                                 ; para ir a obtener inputs del teclado
     ;mov bx, 0x1                                  ; 
     ;mov ah, 0xe                                  ; esto le dice a la interrupcion 16h que se escribira un caracter
     ;int 0x10                                     ; interrupcion de video  
@@ -52,17 +57,7 @@ string:
     mov ax, 1h                                   ; ponemos 1 en ah, que sera nuestri "estado" despues de presionar una tecla
     push ax                                      ; lo ponemos en la pila
     je ONLED                                     ; si al era igual a 'y', saltamos a ONLED
-    xor ax, ax                                   ; limpiamos ax
-    mov ds, ax                                   ; ds needs to be 0 for lodsb
-    cld 
-    mov si, message3                             ; si no, cargamos el mensaje 3
-    jmp string                                   ; e iremos a ponerlo
-
-getchar:
-    mov ah,0x0                                   ; ah debe de ser 0 para que la interrupcion 16 sepa que debe de leer del teclado
-    mov al, 0x0                                  ; lo hacemos 0, solo par evitar algun problema, aqui se guarda el valor ascii usado
-    int 0x16                                     ; la interrupcion "read", el valor ascii se guarda en al.
-    ret
+    jmp OFFLED                                   ; si no, saltamos a OFFLED
 
 ONLED:                                            ;aqui haceos que salga el mensaje 2
     xor ax, ax                                   ; limpiamos ax
@@ -70,6 +65,13 @@ ONLED:                                            ;aqui haceos que salga el mens
     cld 
     mov si, message2
     jmp string
+
+OFFLED:
+    xor ax, ax                                   ; limpiamos ax
+    mov ds, ax                                   ; ds needs to be 0 for lodsb
+    cld 
+    mov si, message3                             ; si no, cargamos el mensaje 3
+    jmp string                                   ; e iremos a ponerlo
 
 clearS:
     ;mov ax,0x0B800                               ;0B800:0000 es donde esta el buffer de video en modo texto, DI solo debe de ser 0000, asi que lo limpiaremos
